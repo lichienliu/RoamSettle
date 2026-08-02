@@ -131,10 +131,13 @@ export const config = createConfig({
 ```
 
 - Base App 內:已註冊 app 的交易由 Base App 自動歸因,不需額外處理
-- **⚠️ 未驗證的風險**:Base Pay 的 `pay()` 獨立於 wagmi,**不能假設**瀏覽器中的 Base Pay 交易會帶上 wagmi 的 dataSuffix
-- **第 1–2 週必做的實驗**(在寫完整產品之前):做一個最陽春付款頁,在 Sepolia 用 Base Pay 發一筆,到 Base Dashboard 看是否歸因成功
-  - 成功 → 照原計畫
-  - 失敗 → 結算付款改用 wagmi/viem 自組 ERC-20 transfer(UX 稍差但歸戶保住),Base Pay 僅作備選
+- **✅ 歸因實驗結論(2026-08-02,Base Sepolia 實測,實驗頁 `/lab/attribution`)**:
+  - **Path A — Base Pay `pay()`:失敗**。付款完成(status: completed)但 user operation calldata 與 bundler 交易兩層都沒有 suffix → **正式產品的結算付款不用 Base Pay**
+    - 驗證交易:user op `0x04a8528c…c52fafb3`
+  - **Path B — viem walletClient 掛 `dataSuffix`(transport 接 Base Account SDK provider):成功**。suffix 確認出現在鏈上交易 calldata(EntryPoint handleOps 內)
+    - 驗證交易:`0x4bf461b3…e36fc777`
+  - **定案**:結算付款用 wagmi/viem 自組 ERC-20 transfer + dataSuffix(上方 wagmi config 掛法已被 Path B 等效驗證);Base Pay 僅在日後官方支援 dataSuffix 時重評
+  - 額外發現:兩條路徑 gas 都由 Coinbase paymaster 代付(測試網實測,錢包 0 ETH 也能完成 Base Pay;自組 transfer 也未扣 ETH)→ 用戶端可能不需持有 ETH,mainnet 政策待上線時確認
 
 ---
 
