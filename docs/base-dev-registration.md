@@ -21,8 +21,10 @@
 - 用該錢包登入 https://www.base.dev
 
 ### Step 2:建立專案、取得 Builder Code
-- 建立 project 後即獲得 Builder Code,格式如 `bc_b7k3p9da`
-- 之後隨時可在 **Settings → Builder Code** 查看
+- ⚠️ **2026-08-02 實測更新**:與本文件原記載不同,現在的 Base Dashboard 要求**先加入並驗證 app domain 才會生成 Builder Code**(Settings → Builder Codes → Add Domain)
+- 驗證方式:Dashboard 產生 `<meta name="base:app_id" content="<app_id>">`,埋進網站 `<head>` 後回 Dashboard 按驗證
+- 因此實際順序:註冊 app → 部署(拿到網域)→ 埋 meta tag → 驗證網域 → 取得 Builder Code
+- RoamSettle 的 app id:`6a6f3515a8c4f2b6db3b3db0`(已埋在 `app/layout.tsx` metadata)
 - Builder Code 的作用:鏈級歸因——證明哪些交易是你的 app 帶來的,並且是 Base 未來獎勵計畫的信任來源
 
 ### Step 3:填寫 app metadata(正式上架需齊全)
