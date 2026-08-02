@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 專案概況
 
-**RoamSettle**（規格文件中原名 Base Split）：支援旅行記帳、用 Base 鏈上 USDC 完成朋友間結算的**非託管** Web App。
+**RoamSettle**：支援旅行記帳、用 Base 鏈上 USDC 完成朋友間結算的**非託管** Web App。
 
 - 首要目標：在 Base 鏈上累積真實、可歸戶的 builder 紀錄（Builder Code 交易歸因、已驗證合約、公開 GitHub 足跡），產品本身是載體
-- 完整規格：`docs/base-split-spec.md`（v0.5，開發時的主要參考）
+- 完整規格：`docs/roamsettle-spec.md`（v0.5，開發時的主要參考）
 - Base Dashboard 註冊與 Builder Code 取得流程：`docs/base-dev-registration.md`
 
 **目前狀態**：專案初始階段，尚未 scaffold 程式碼，等待設計稿中。
@@ -33,6 +33,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 待驗證的關鍵風險
 
 Base Pay 的 `pay()` 獨立於 wagmi，**不能假設**瀏覽器中的 Base Pay 交易會帶上 dataSuffix。開發初期必須先在 Sepolia 實測歸因；失敗則改用 wagmi/viem 自組 ERC-20 transfer（詳見兩份文件的警告段落）。
+
+## Git 工作流程（GitHub Flow）
+
+- `main` 永遠保持可部署狀態（Vercel production 追蹤 main）；**不直接 commit main**
+- 所有變更開分支 → push → 開 PR → squash merge 進 main
+- 分支命名：`feat/xxx`、`fix/xxx`、`docs/xxx`、`chore/xxx`
+- 版本節點打 tag（`v0.5`、`v1.0`⋯），對應規格 §8 的 roadmap
+- 不採用 Git Flow（solo 開發不需要 develop/release/hotfix 長駐分支）
 
 ## 其他慣例
 
