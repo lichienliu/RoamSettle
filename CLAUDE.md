@@ -10,7 +10,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 完整規格：`docs/roamsettle-spec.md`（v0.5，開發時的主要參考）
 - Base Dashboard 註冊與 Builder Code 取得流程：`docs/base-dev-registration.md`
 
-**目前狀態**：專案初始階段，尚未 scaffold 程式碼，等待設計稿中。
+**目前狀態**：UI 原型完成（11 張畫面、mock 資料）；已部署 https://roamsettle.vercel.app（push main 自動部署）；Base Dashboard 已註冊並取得 Builder Code。下一步：Sepolia 歸因實驗（規格 §7）。
+
+## Builder 身分（已定案）
+
+- Builder 錢包：Base Account `0x6b501dd4a147e7ae9bf818d7c63ef68376b4501e`（passkey）
+- Builder Code：`bc_15l5ddco`；app id：`6a6f3515a8c4f2b6db3b3db0`（常數在 `lib/attribution.ts`）
+- 所有鏈上整合必掛 dataSuffix，見 `lib/attribution.ts` 註解與規格 §7
 
 ## 技術棧（已定案，見規格 §4）
 

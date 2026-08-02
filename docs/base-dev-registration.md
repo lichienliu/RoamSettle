@@ -64,6 +64,14 @@ const DATA_SUFFIX = Attribution.toDataSuffix({ codes: ["你的-BUILDER-CODE"] })
 - [ ] Name / icon / tagline / screenshots / category / description / builder code 全部填齊
 - [ ] (若用推播)改用 Base Dashboard 的 Notifications API,以 wallet address 發送
 
+## ✅ RoamSettle 註冊紀錄(2026-08-02 完成)
+
+- **Builder 錢包**:Base Account `0x6b501dd4a147e7ae9bf818d7c63ef68376b4501e`(passkey;使用者知情選用既有帳號)
+- **App id**:`6a6f3515a8c4f2b6db3b3db0`
+- **已驗證網域**:`roamsettle.vercel.app`(Vercel,push main 自動部署)
+- **Builder Code**:`bc_15l5ddco`(常數收在 `lib/attribution.ts`)
+- 待補 metadata:icon、screenshots、category、description
+
 ## 上架之後
 
 - **Base Dashboard 分析頁**:追蹤你的 app 歸因到的交易量——這就是你的「成績單」,未來獎勵計畫擴大時吃的是這份資料
