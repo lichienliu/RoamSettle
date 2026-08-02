@@ -13,6 +13,15 @@ Travel expense splitting with non-custodial USDC settlement on [Base](https://ba
 - [專案規格 v0.5](docs/roamsettle-spec.md)
 - [Base Dashboard 註冊流程](docs/base-dev-registration.md)
 
+## Development
+
+```bash
+npm install
+npm run dev    # http://localhost:3000
+npm run build
+npm run lint
+```
+
 ## Status
 
-🚧 初始階段 — 等待設計稿，尚未開始實作。
+🚧 UI 原型階段 — 11 張畫面（Onchain Swiss 設計方向）已可點擊走完全流程，資料為 mock；後端 / 鏈上整合尚未開始。
