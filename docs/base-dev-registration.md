@@ -54,7 +54,7 @@ const DATA_SUFFIX = Attribution.toDataSuffix({ codes: ["你的-BUILDER-CODE"] })
 // 之後該 client 發出的所有交易自動帶上
 ```
 
-**⚠️ 已知未解問題**:Base Pay(`pay()`)獨立於 wagmi 運作,官方文件未保證瀏覽器中的 Base Pay 交易會套用你的 dataSuffix。**必須實測**:Sepolia 發一筆 Base Pay 付款 → 到 Base Dashboard 的分析頁看是否歸因。失敗就改用 wagmi/viem 自組 USDC transfer。
+**✅ 已實測(2026-08-02,Base Sepolia,實驗頁 `/lab/attribution`)**:Base Pay `pay()` 的交易**不帶** dataSuffix(user op 與 bundler tx 兩層 calldata 皆無)→ 走 wagmi/viem 自組 USDC transfer;viem walletClient 掛 dataSuffix(transport 接 Base Account SDK provider)**驗證成功**,suffix 確實上鏈(tx `0x4bf461b3…e36fc777`)。詳見規格 §7。
 
 ### Step 5:驗收清單(官方標準)
 對照官方「已完成遷移/上架」的檢核:

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 完整規格：`docs/roamsettle-spec.md`（v0.5，開發時的主要參考）
 - Base Dashboard 註冊與 Builder Code 取得流程：`docs/base-dev-registration.md`
 
-**目前狀態**：UI 原型完成（11 張畫面、mock 資料）；已部署 https://roamsettle.vercel.app（push main 自動部署）；Base Dashboard 已註冊並取得 Builder Code。下一步：Sepolia 歸因實驗（規格 §7）。
+**目前狀態**：UI 原型完成（11 張畫面、mock 資料）；已部署 https://roamsettle.vercel.app（push main 自動部署）；Base Dashboard 已註冊並取得 Builder Code；Sepolia 歸因實驗已完成（2026-08-02，實驗頁 `/lab/attribution`，結論見下）。下一步：錢包連線（SIWE）與後端資料層。
 
 ## Builder 身分（已定案）
 
@@ -36,9 +36,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 5. **SIWE 正確實作**：後端產 nonce → 錢包簽名 → 後端驗簽 + 驗 nonce → 建 session；不得只憑前端地址視為登入
 6. **Builder Code 全交易掛載**：wagmi config 掛 dataSuffix（`ox/erc8021` 的 `Attribution.toDataSuffix`），這是專案命脈（規格 §7）
 
-## 待驗證的關鍵風險
+## 歸因實驗結論（2026-08-02 已定案）
 
-Base Pay 的 `pay()` 獨立於 wagmi，**不能假設**瀏覽器中的 Base Pay 交易會帶上 dataSuffix。開發初期必須先在 Sepolia 實測歸因；失敗則改用 wagmi/viem 自組 ERC-20 transfer（詳見兩份文件的警告段落）。
+Sepolia 實測（規格 §7 有完整紀錄）：**Base Pay `pay()` 不帶 dataSuffix**（付款成功但無歸因）；**viem walletClient 掛 dataSuffix 成功上鏈**。因此結算付款一律用 wagmi/viem 自組 ERC-20 transfer + dataSuffix，不用 Base Pay。附帶發現：測試網上兩路徑 gas 皆由 paymaster 代付，用戶端可能不需持有 ETH（mainnet 待確認）。
 
 ## Git 工作流程（GitHub Flow）
 
