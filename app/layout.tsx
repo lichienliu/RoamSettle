@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "RoamSettle",
   description:
     "Track trip expenses with friends, settle in USDC on Base. Non-custodial — money moves wallet to wallet.",
+  other: {
+    // Base Dashboard domain-ownership verification (dashboard.base.org app 6a6f3515a8c4f2b6db3b3db0)
+    "base:app_id": "6a6f3515a8c4f2b6db3b3db0",
+  },
 };
 
 export default function RootLayout({
