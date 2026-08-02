@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/*
+ * RoamSettle — "Onchain Swiss" design tokens (design doc direction 2a).
+ * Flat, hard-edged, mono numerals. No rounded cards, no soft shadows.
+ * Archivo carries the voice; IBM Plex Mono carries everything that counts.
+ */
+@theme {
+  --color-ink: #0a0b0d;
+  --color-ash: #5b616e;
+  --color-silver: #9ba1ab;
+  --color-hairline: #e3e6ea;
+  --color-rule: #c9ccd1;
+  --color-fill: #eef0f3;
+  --color-cobalt: #0018f5;
+  --color-cobalt-wash: #f5f7ff;
+  --color-periwinkle: #99a3ff;
+  --color-loss: #e8442e;
+  --color-gain: #00874d;
+  --color-tangerine: #f5620f;
+  --color-violet: #6c3bf5;
+  --color-darkline: #3a3f4a;
+
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* Recurring type roles from the design doc */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
