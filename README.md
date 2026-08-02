@@ -10,7 +10,7 @@ Travel expense splitting with non-custodial USDC settlement on [Base](https://ba
 
 ## Docs
 
-- [專案規格 v0.5](docs/base-split-spec.md)
+- [專案規格 v0.5](docs/roamsettle-spec.md)
 - [Base Dashboard 註冊流程](docs/base-dev-registration.md)
 
 ## Status

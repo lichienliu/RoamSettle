@@ -1,4 +1,6 @@
-# Base Split — 專案規格文件（v0.5）
+# RoamSettle — 專案規格文件（v0.5）
+
+> 產品名稱定案為 **RoamSettle**（舊名 Base Split）。
 
 > 最後更新：2026-08-02
 > 用途:本文件為 Claude Code 開發時的主要參考。建議放在 repo 根目錄或作為 CLAUDE.md 的基礎。
