@@ -29,6 +29,7 @@ export async function GET(
 
   const members = await db.query.tripMembers.findMany({
     where: eq(tripMembers.tripId, tripId),
+    with: { user: { columns: { walletAddress: true } } },
   });
 
   const expenseRows = await db.query.expenses.findMany({
@@ -71,12 +72,18 @@ export async function GET(
       inviteToken: membership.role === "organizer" ? trip.inviteToken : null,
     },
     myMemberId: membership.id,
-    members: members.map((m) => ({
-      id: m.id,
-      nickname: m.nickname,
-      role: m.role,
-      hasWallet: m.walletAddress !== null,
-    })),
+    members: members.map((m) => {
+      // 收款地址:成員層優先(先填地址後綁帳號的情況),否則用帳號綁的錢包。
+      // 同團旅伴互相付款本來就需要知道彼此地址,僅成員可見(上方已擋非成員)
+      const payoutAddress = m.walletAddress ?? m.user?.walletAddress ?? null;
+      return {
+        id: m.id,
+        nickname: m.nickname,
+        role: m.role,
+        hasWallet: payoutAddress !== null,
+        payoutAddress,
+      };
+    }),
     expenses: expenseRows.map((e) => ({
       id: e.id,
       title: e.title,

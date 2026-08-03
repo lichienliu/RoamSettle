@@ -3,8 +3,11 @@
 import { use, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, type SettlementBatch } from "@/lib/api-client";
+import { txExplorerUrl } from "@/lib/chain";
 import { formatUnits } from "@/lib/currency";
 import { Avatar } from "@/components/avatar";
+import { LinkWalletButton } from "@/components/link-wallet-button";
+import { PayUsdcButton } from "@/components/pay-usdc-button";
 import { TabBar } from "@/components/tab-bar";
 
 /** num/den(den 為 10 的冪)→ "0.0067" 顯示字串。 */
@@ -34,10 +37,12 @@ export default function SettlePage({
     queryKey: ["settlements", tripId],
     queryFn: () => api.settlements(tripId),
   });
+  const { data: meData } = useQuery({ queryKey: ["me"], queryFn: api.me });
 
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: ["settlements", tripId] });
     queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
+    queryClient.invalidateQueries({ queryKey: ["me"] });
   };
   const lock = useMutation({
     mutationFn: () => api.lockSettlement(tripId, rate.trim()),
@@ -51,6 +56,7 @@ export default function SettlePage({
   if (!detail || !settlementData) return <main className="flex-1" />;
 
   const { trip, members, myMemberId } = detail;
+  const myWallet = meData?.user?.walletAddress ?? null;
   const isOrganizer =
     members.find((m) => m.id === myMemberId)?.role === "organizer";
   const nameOf = (id: string) =>
@@ -171,11 +177,24 @@ export default function SettlePage({
                         {nameOf(item.creditorMemberId)}
                       </p>
                       <p className="font-mono text-[10px] leading-none tracking-[0.08em] text-ash">
-                        {item.status === "pending"
-                          ? "PENDING"
-                          : item.status === "paid"
-                            ? "PAID ONCHAIN"
-                            : "SETTLED OFFLINE"}
+                        {item.status === "pending" ? (
+                          "PENDING"
+                        ) : item.status === "paid" ? (
+                          item.txHash ? (
+                            <a
+                              href={txExplorerUrl(item.txHash)}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline underline-offset-2"
+                            >
+                              PAID ONCHAIN ↗
+                            </a>
+                          ) : (
+                            "PAID ONCHAIN"
+                          )
+                        ) : (
+                          "SETTLED OFFLINE"
+                        )}
                       </p>
                     </div>
                     <p
@@ -187,14 +206,31 @@ export default function SettlePage({
                     </p>
                   </div>
 
-                  {mine && (
-                    <button
-                      type="button"
-                      disabled
-                      className="mt-3 w-full border-[1.5px] border-ink p-[12px] text-sm font-semibold opacity-40"
-                    >
-                      PAY IN USDC — NEXT BUILD
-                    </button>
+                  {mine &&
+                    (() => {
+                      const recipient = members.find(
+                        (m) => m.id === item.creditorMemberId,
+                      )?.payoutAddress;
+                      return recipient ? (
+                        <PayUsdcButton
+                          itemId={item.id}
+                          amountUsdcUnits={item.amountUsdcUnits}
+                          recipient={recipient}
+                          myWallet={myWallet}
+                          onDone={refresh}
+                        />
+                      ) : (
+                        <p className="mt-3 font-mono text-[11px] leading-relaxed text-ash">
+                          {nameOf(item.creditorMemberId)} hasn&apos;t linked a
+                          wallet yet — USDC needs somewhere to land.
+                        </p>
+                      );
+                    })()}
+                  {iAmCreditor && item.status === "pending" && !myWallet && (
+                    <LinkWalletButton
+                      label="LINK WALLET TO RECEIVE USDC"
+                      onLinked={refresh}
+                    />
                   )}
                   {iAmCreditor && item.status === "pending" && (
                     <button

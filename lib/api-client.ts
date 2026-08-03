@@ -22,6 +22,7 @@ export type Member = {
   nickname: string;
   role: "organizer" | "member";
   hasWallet: boolean;
+  payoutAddress: string | null;
 };
 
 export type Expense = {
@@ -109,6 +110,16 @@ export const api = {
     request<{ ok: true }>(`/api/settlement-items/${itemId}/offline`, {
       method: "POST",
     }),
+  linkWallet: (message: string, signature: string) =>
+    request<{ address: string }>("/api/auth/link", {
+      method: "POST",
+      body: JSON.stringify({ message, signature }),
+    }),
+  submitPayment: (itemId: string, txHash: string) =>
+    request<{ ok: true; txHash: string }>(
+      `/api/settlement-items/${itemId}/payment`,
+      { method: "POST", body: JSON.stringify({ txHash }) },
+    ),
 };
 
 export type SettlementItem = {
@@ -117,6 +128,7 @@ export type SettlementItem = {
   creditorMemberId: string;
   amountUsdcUnits: string;
   status: "pending" | "paid" | "settled_offline";
+  txHash: string | null;
 };
 
 export type SettlementBatch = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { chain } from "@/lib/chain";
+import { requestSiwePayload } from "@/lib/base-account";
 
 type SignedInUser = { userId: string; address: string };
 
@@ -22,40 +22,7 @@ export function SignInWithBase({
     setBusy(true);
     setError(null);
     try {
-      const { nonce } = await fetch("/api/auth/nonce", { method: "POST" }).then(
-        (r) => r.json(),
-      );
-
-      const { createBaseAccountSDK } = await import("@base-org/account");
-      const provider = createBaseAccountSDK({
-        appName: "RoamSettle",
-        appChainIds: [chain.id],
-      }).getProvider();
-
-      const { accounts } = (await provider.request({
-        method: "wallet_connect",
-        params: [
-          {
-            version: "1",
-            capabilities: {
-              signInWithEthereum: {
-                nonce,
-                chainId: `0x${chain.id.toString(16)}`,
-              },
-            },
-          },
-        ],
-      })) as {
-        accounts: {
-          address: string;
-          capabilities: {
-            signInWithEthereum: { message: string; signature: string };
-          };
-        }[];
-      };
-
-      const { message, signature } =
-        accounts[0].capabilities.signInWithEthereum;
+      const { message, signature } = await requestSiwePayload();
 
       const res = await fetch("/api/auth/verify", {
         method: "POST",

@@ -1,4 +1,4 @@
-import { and, eq, ne } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import {
@@ -7,6 +7,7 @@ import {
   settlementPayments,
   tripMembers,
 } from "@/db/schema";
+import { completeBatchIfSettled } from "@/lib/batches";
 import { getSession } from "@/lib/session";
 import { findMembership } from "@/lib/trips";
 
@@ -70,20 +71,7 @@ export async function POST(
       .where(eq(settlementItems.id, item.id)),
   ]);
 
-  // 這一輪全部結清 → batch 完成
-  const remaining = await db.query.settlementItems.findFirst({
-    where: and(
-      eq(settlementItems.batchId, item.batchId),
-      eq(settlementItems.status, "pending"),
-      ne(settlementItems.id, item.id),
-    ),
-  });
-  if (!remaining) {
-    await db
-      .update(settlementBatches)
-      .set({ status: "completed" })
-      .where(eq(settlementBatches.id, item.batchId));
-  }
+  await completeBatchIfSettled(item.batchId, item.id);
 
   return NextResponse.json({ ok: true });
 }
