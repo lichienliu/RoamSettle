@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   other: {
     // Base Dashboard domain-ownership verification (dashboard.base.org app 6a6f3515a8c4f2b6db3b3db0)
     "base:app_id": "6a6f3515a8c4f2b6db3b3db0",
+    // Talent Protocol project-ownership verification (talent.app project RoamSettle)
+    "talentapp:project_verification":
+      "46624f211efb53f8abc49fdd54ef90acc8941273064129ce5108f994855efdbd486871190e922d8da856cdc6f553c137b542d6414b4dd0d103fad503d818df0b",
   },
 };
 
