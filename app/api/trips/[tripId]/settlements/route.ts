@@ -8,6 +8,7 @@ import {
   expenses,
   settlementBatches,
   settlementItems,
+  settlementPayments,
   trips,
 } from "@/db/schema";
 import { computeNetBalances } from "@/lib/balances";
@@ -161,6 +162,23 @@ export async function GET(
       })
     : [];
 
+  // 已核銷的鏈上付款 → 附 tx hash 供前端連去區塊瀏覽器
+  const payments = items.length
+    ? await db.query.settlementPayments.findMany({
+        where: and(
+          inArray(
+            settlementPayments.settlementItemId,
+            items.map((i) => i.id),
+          ),
+          eq(settlementPayments.status, "confirmed"),
+          eq(settlementPayments.settledOffline, false),
+        ),
+      })
+    : [];
+  const txByItem = new Map(
+    payments.map((p) => [p.settlementItemId, p.transactionId]),
+  );
+
   return NextResponse.json({
     batches: batches.map((b) => ({
       id: b.id,
@@ -176,6 +194,7 @@ export async function GET(
           creditorMemberId: i.creditorMemberId,
           amountUsdcUnits: i.amountUsdcUnits.toString(),
           status: i.status,
+          txHash: txByItem.get(i.id) ?? null,
         })),
     })),
   });
