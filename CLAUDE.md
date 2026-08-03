@@ -9,14 +9,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 首要目標：在 Base 鏈上累積真實、可歸戶的 builder 紀錄（Builder Code 交易歸因、已驗證合約、公開 GitHub 足跡），產品本身是載體
 - 完整規格：`docs/roamsettle-spec.md`（v0.5，開發時的主要參考）
 - Base Dashboard 註冊與 Builder Code 取得流程：`docs/base-dev-registration.md`
+- 對外 builder 身分資產總覽（basename、Talent Protocol、驗證 meta tag 位置）：`docs/builder-profile.md`
 
-**目前狀態**：UI 原型完成（11 張畫面、mock 資料）；已部署 https://roamsettle.vercel.app（push main 自動部署）；Base Dashboard 已註冊並取得 Builder Code；Sepolia 歸因實驗已完成（2026-08-02，實驗頁 `/lab/attribution`，結論見下）。下一步：錢包連線（SIWE）與後端資料層。
+**目前狀態**：**v0.5 已完成並驗收（2026-08-03）**——SIWE 登入、記帳、結算引擎（快照鎖定/匯率/最少轉帳/線下結清）、USDC 鏈上付款 + 後端核銷全部上線；全流程實測走通，首筆歸因付款於 Sepolia 驗證成功（tx `0x5ac0167f…7a4d7a`，Builder Code suffix 已上鏈）。**2026-08-03 全 app 切換 Base Mainnet**（單一切換點 `lib/chain.ts`）。下一步：找 3–10 位朋友做 mainnet 小額實測；Base Dashboard 補 app metadata。
 
 ## Builder 身分（已定案）
 
 - Builder 錢包：Base Account `0x6b501dd4a147e7ae9bf818d7c63ef68376b4501e`（passkey）
 - Builder Code：`bc_15l5ddco`；app id：`6a6f3515a8c4f2b6db3b3db0`（常數在 `lib/attribution.ts`）
 - 所有鏈上整合必掛 dataSuffix，見 `lib/attribution.ts` 註解與規格 §7
+- Basename：`lichienliu.base.eth` 由 builder 錢包持有（效期至 2027-08）；Talent Protocol 已立案 project「RoamSettle」——細節與注意事項見 `docs/builder-profile.md`
+- `app/layout.tsx` 的 `metadata.other` 內有兩個**所有權驗證 meta tag**（`base:app_id`、`talentapp:project_verification`），**不可移除**
 
 ## 技術棧（已定案，見規格 §4）
 
@@ -24,7 +27,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - React + Tailwind CSS + shadcn/ui、TanStack Query
 - PostgreSQL (Neon) + **Drizzle ORM**（不用 Prisma、不用 NestJS）
 - viem（**>= 2.45.0**，dataSuffix 需要）+ wagmi + @base-org/account（Sign in with Base、Base Pay）
-- 部署 Vercel；鏈：Base Sepolia（開發）→ Base Mainnet（上線）
+- 部署 Vercel；鏈：**Base Mainnet**（2026-08-03 起；v0.5 開發期用 Base Sepolia，單一切換點 `lib/chain.ts`，`/lab/attribution` 刻意留在 Sepolia 當歷史紀錄）
 - 型態為**標準 Web App**，不是 Farcaster Mini App，不做原生 App
 
 ## 不可妥協的工程規則（規格 §5）
