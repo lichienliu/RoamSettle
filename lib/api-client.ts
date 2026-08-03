@@ -98,4 +98,32 @@ export const api = {
     }),
   deleteExpense: (expenseId: string) =>
     request<{ ok: true }>(`/api/expenses/${expenseId}`, { method: "DELETE" }),
+  settlements: (tripId: string) =>
+    request<{ batches: SettlementBatch[] }>(`/api/trips/${tripId}/settlements`),
+  lockSettlement: (tripId: string, rate: string) =>
+    request<{ id: string }>(`/api/trips/${tripId}/settlements`, {
+      method: "POST",
+      body: JSON.stringify({ rate }),
+    }),
+  markOffline: (itemId: string) =>
+    request<{ ok: true }>(`/api/settlement-items/${itemId}/offline`, {
+      method: "POST",
+    }),
+};
+
+export type SettlementItem = {
+  id: string;
+  debtorMemberId: string;
+  creditorMemberId: string;
+  amountUsdcUnits: string;
+  status: "pending" | "paid" | "settled_offline";
+};
+
+export type SettlementBatch = {
+  id: string;
+  lockedAt: string;
+  status: "open" | "completed";
+  fxRateNumerator: string;
+  fxRateDenominator: string;
+  items: SettlementItem[];
 };
