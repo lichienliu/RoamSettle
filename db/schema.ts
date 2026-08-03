@@ -39,6 +39,15 @@ export const paymentStatus = pgEnum("payment_status", [
   "failed",
 ]);
 
+/**
+ * SIWE 一次性 nonce(規則 #5):後端發放 → 錢包簽進訊息 → 驗證時查表並刪除。
+ * 不存在或過期一律拒絕,防重放攻擊。
+ */
+export const siweNonces = pgTable("siwe_nonces", {
+  nonce: text("nonce").primaryKey(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   // 一般旅伴免錢包即可記帳,連錢包後才回填(規格 §3)

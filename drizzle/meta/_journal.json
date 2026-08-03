@@ -8,6 +8,13 @@
       "when": 1785719264318,
       "tag": "0000_remarkable_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785720997098,
+      "tag": "0001_opposite_randall",
+      "breakpoints": true
     }
   ]
 }
