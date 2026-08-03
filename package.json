@@ -5,7 +5,8 @@
   "overrides": {
     "sharp": "^0.35.0",
     "postcss": "^8.5.18",
-    "axios": "^1.19.0"
+    "axios": "^1.19.0",
+    "esbuild": ">=0.25.0"
   },
   "scripts": {
     "dev": "next dev",
