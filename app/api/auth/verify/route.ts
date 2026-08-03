@@ -1,10 +1,10 @@
 import { and, eq, gt } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { parseSiweMessage, validateSiweMessage } from "viem/siwe";
 import { db } from "@/db";
 import { siweNonces, users } from "@/db/schema";
 import { chain, publicClient } from "@/lib/chain";
 import { createSession } from "@/lib/session";
+import { parseBaseSiweMessage } from "@/lib/siwe";
 
 /**
  * SIWE 驗證(規則 #5):驗 nonce → 驗訊息欄位 → 鏈上驗簽 → 建 session。
@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const fields = parseSiweMessage(message);
-  if (!fields.address || !fields.nonce) {
+  const fields = parseBaseSiweMessage(message);
+  if (!fields) {
     return NextResponse.json({ error: "malformed siwe message" }, { status: 400 });
   }
 
@@ -43,10 +43,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // domain 必須是本站、時間窗有效、鏈必須是目前的鏈
+  // domain 綁定:訊息裡的 URI 必須指向本站(防別站騙簽後重放),
+  // domain 行必須與 URI 的 hostname 一致;鏈必須是目前的鏈
   const host = req.headers.get("host") ?? "";
+  let uriHost = "";
+  let uriHostname = "";
+  try {
+    const uri = new URL(fields.uri);
+    uriHost = uri.host;
+    uriHostname = uri.hostname;
+  } catch {
+    return NextResponse.json({ error: "invalid uri" }, { status: 401 });
+  }
   if (
-    !validateSiweMessage({ message: fields, domain: host }) ||
+    uriHost !== host ||
+    fields.domain !== uriHostname ||
     fields.chainId !== chain.id
   ) {
     return NextResponse.json({ error: "invalid siwe message" }, { status: 401 });
