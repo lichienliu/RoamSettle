@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -34,9 +35,11 @@ export default function RootLayout({
       <body
         className={`${archivo.variable} ${plexMono.variable} bg-fill font-sans text-ink antialiased`}
       >
-        <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-white">
-          {children}
-        </div>
+        <Providers>
+          <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-white">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );
