@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SignInWithBase } from "@/components/sign-in-with-base";
 
 type Me = { id: string; walletAddress: string | null; displayName: string };
 
 export default function LoginPage() {
+  const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -63,9 +65,14 @@ export default function LoginPage() {
             </button>
           </div>
         ) : (
-          <SignInWithBase onSignedIn={({ address }) =>
-            setMe({ id: "", walletAddress: address, displayName: address })
-          } />
+          <SignInWithBase
+            onSignedIn={() => {
+              const next = new URLSearchParams(window.location.search).get(
+                "next",
+              );
+              router.push(next && next.startsWith("/") ? next : "/");
+            }}
+          />
         )}
       </div>
     </main>
