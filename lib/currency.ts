@@ -9,6 +9,7 @@ const CURRENCY_EXPONENT: Record<string, number> = {
   TWD: 2,
   USD: 2,
   EUR: 2,
+  USDC: 6,
 };
 
 export const SUPPORTED_CURRENCIES = ["TWD", "JPY", "USD", "EUR", "KRW"] as const;
